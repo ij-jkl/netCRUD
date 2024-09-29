@@ -1,4 +1,8 @@
 using Crud_API.Data;
+using Crud_API.Repositories.Interfaces;
+using Crud_API.Repositories;
+using Crud_API.Services.IServices;
+using Crud_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +21,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();  
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
