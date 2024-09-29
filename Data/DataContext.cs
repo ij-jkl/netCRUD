@@ -10,7 +10,7 @@ namespace Crud_API.Data
             
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
     }
 }
 
