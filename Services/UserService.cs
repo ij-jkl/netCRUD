@@ -1,6 +1,7 @@
 ﻿using Crud_API.Data;
 using Crud_API.Dtos.Get;
 using Crud_API.Dtos.Post;
+using Crud_API.Dtos.Put;
 using Crud_API.Entities;
 using Crud_API.Repositories;
 using Crud_API.Repositories.Interfaces;
@@ -68,5 +69,32 @@ namespace Crud_API.Services
             return userPostDto;
         }
 
+        public async Task<UserPutDto> UpdateUser(UserPostDto userPostDto)
+        {
+            
+            var existingUser = await _userRepository.GetById(userPostDto.Id);
+
+            if (existingUser == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            existingUser.Name = userPostDto.Name;
+            existingUser.Email = userPostDto.Email;
+            existingUser.Password = userPostDto.Password;
+            existingUser.UserName = userPostDto.UserName;
+
+            await _userRepository.UpdateUser(existingUser);
+
+            var userPutDto = new UserPutDto
+            {
+                Id = existingUser.Id,
+                Name = existingUser.Name,
+                UserName = existingUser.UserName,
+                Email = existingUser.Email
+            };
+
+            return userPutDto;
+        }
     }
 }

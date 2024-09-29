@@ -1,5 +1,6 @@
 ﻿using Crud_API.Dtos.Get;
 using Crud_API.Dtos.Post;
+using Crud_API.Dtos.Put;
 using Crud_API.Entities;
 using Crud_API.Services.IServices; 
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,39 @@ namespace Crud_API.Controllers
             }
 
             return CreatedAtAction(nameof(UserGetByID), new { id = createdUser.Id }, createdUser);
+        }
+
+        // PUT: api/user/ID
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UserPutDto>> UserUpdatePut(int id, [FromBody] UserPostDto userPostDto)
+        {
+            if (userPostDto == null)
+            {
+                return BadRequest("User data is null");
+            }
+
+            // The id of the Url has to match the id we are sending in the put method
+            if (id != userPostDto.Id)
+            {
+                return BadRequest("User ID mismatch");
+            }
+
+            try
+            {
+                var updatedUser = await _userService.UpdateUser(userPostDto);
+
+                if (updatedUser == null)
+                {
+                    return NotFound("User not found for update");
+                }
+
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                // Handles exceptions during updating
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

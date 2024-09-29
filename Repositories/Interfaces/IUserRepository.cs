@@ -8,5 +8,6 @@ namespace Crud_API.Repositories.Interfaces
         Task<UserEntity> GetById(int id);
 
         Task CreateUser(UserEntity user);
+        Task UpdateUser(UserEntity user);
     }
 }
