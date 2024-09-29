@@ -96,5 +96,16 @@ namespace Crud_API.Services
 
             return userPutDto;
         }
+        public async Task DeleteUser(int id)
+        {
+            var user = await _userRepository.GetById(id);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            await _userRepository.DeleteUser(id);
+        }
+
     }
 }

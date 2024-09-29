@@ -97,5 +97,18 @@ namespace Crud_API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> UserDelete(int id)
+        {
+            var userExists = await _userService.GetById(id);
+            if (userExists == null)
+            {
+                return NotFound("User not found");
+            }
+
+            await _userService.DeleteUser(id);
+            return NoContent(); 
+        }
     }
 }

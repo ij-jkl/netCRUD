@@ -11,6 +11,7 @@ namespace Crud_API.Services.IServices
         Task<UserEntity> GetById(int id);
         Task<UserPostDto> CreateUser(UserPostDto user);
         Task<UserPutDto> UpdateUser(UserPostDto user); 
+        Task DeleteUser(int id);
     }
 }
 
