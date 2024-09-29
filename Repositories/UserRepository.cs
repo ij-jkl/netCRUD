@@ -1,6 +1,8 @@
-﻿namespace Crud_API.Repositories
+﻿using Crud_API.Repositories.Interfaces;
+
+namespace Crud_API.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
     }
 }

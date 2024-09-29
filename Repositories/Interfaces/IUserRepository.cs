@@ -1,6 +1,6 @@
 ﻿namespace Crud_API.Repositories.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository 
     {
     }
 }
