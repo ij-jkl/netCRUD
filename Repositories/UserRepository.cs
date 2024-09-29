@@ -13,14 +13,26 @@ namespace Crud_API.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<List<User>> GetAll()
+        public async Task<List<UserEntity>> GetAll()
         {
             return await _dbContext.Users.ToListAsync();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<UserEntity> GetById(int id)
         {
             return await _dbContext.Users.FirstOrDefaultAsync(usr => usr.Id == id);
+        }
+
+        public async Task CreateUser(UserEntity user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null");
+            }
+
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+
         }
     }
 }

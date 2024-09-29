@@ -4,7 +4,9 @@ namespace Crud_API.Repositories.Interfaces
 {
     public interface IUserRepository 
     {
-        Task<List<User>> GetAll();
-        Task<User> GetById(int id);
+        Task<List<UserEntity>> GetAll();
+        Task<UserEntity> GetById(int id);
+
+        Task CreateUser(UserEntity user);
     }
 }

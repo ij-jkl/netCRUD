@@ -1,5 +1,6 @@
 ﻿using Crud_API.Data;
 using Crud_API.Dtos.Get;
+using Crud_API.Dtos.Post;
 using Crud_API.Entities;
 using Crud_API.Repositories;
 using Crud_API.Repositories.Interfaces;
@@ -30,7 +31,7 @@ namespace Crud_API.Services
             return userDtos;
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<UserEntity> GetById(int id)
         {         
             var user = await _userRepository.GetById(id);
 
@@ -39,7 +40,7 @@ namespace Crud_API.Services
                 return null; 
             }
 
-            var userById = new User
+            var userById = new UserEntity
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -49,6 +50,22 @@ namespace Crud_API.Services
             };
 
             return userById; 
+        }
+
+        public async Task<UserPostDto> CreateUser(UserPostDto userPostDto)
+        {
+            var userEntity = new UserEntity
+            {
+                Id = userPostDto.Id,
+                Name = userPostDto.Name,
+                Email = userPostDto.Email,
+                Password = userPostDto.Password,
+                UserName = userPostDto.UserName
+            };
+
+            await _userRepository.CreateUser(userEntity);
+
+            return userPostDto;
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using Crud_API.Dtos.Get;
+using Crud_API.Dtos.Post;
 using Crud_API.Entities;
 using Crud_API.Services.IServices; 
 using Microsoft.AspNetCore.Mvc;
@@ -31,8 +32,9 @@ namespace Crud_API.Controllers
             return Ok(users);
         }
 
+        // GET: api/user/ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> UserGetByID(int id)
+        public async Task<ActionResult<UserEntity>> UserGetByID(int id)
         {
             var users = await _userService.GetById(id);
             if (users == null)
@@ -41,6 +43,25 @@ namespace Crud_API.Controllers
             }
 
             return Ok(users);
+        }
+
+        // POST: api/user
+        [HttpPost]
+        public async Task<ActionResult<UserPostDto>> UserCreatePost(UserPostDto userPostDto)
+        {
+            if (userPostDto == null)
+            {
+                return BadRequest("User data is null");
+            }
+
+            var createdUser = await _userService.CreateUser(userPostDto);
+
+            if (createdUser == null)
+            {
+                return BadRequest("User could not be created");
+            }
+
+            return CreatedAtAction(nameof(UserGetByID), new { id = createdUser.Id }, createdUser);
         }
     }
 }
