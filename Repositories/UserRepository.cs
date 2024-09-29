@@ -17,5 +17,10 @@ namespace Crud_API.Repositories
         {
             return await _dbContext.Users.ToListAsync();
         }
+
+        public async Task<User> GetById(int id)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(usr => usr.Id == id);
+        }
     }
 }

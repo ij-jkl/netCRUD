@@ -1,5 +1,6 @@
 ﻿using Crud_API.Data;
 using Crud_API.Dtos.Get;
+using Crud_API.Entities;
 using Crud_API.Repositories;
 using Crud_API.Repositories.Interfaces;
 using Crud_API.Services.IServices;
@@ -28,5 +29,27 @@ namespace Crud_API.Services
 
             return userDtos;
         }
+
+        public async Task<User> GetById(int id)
+        {         
+            var user = await _userRepository.GetById(id);
+
+            if (user == null)
+            {
+                return null; 
+            }
+
+            var userById = new User
+            {
+                Id = user.Id,
+                Name = user.Name,
+                UserName = user.UserName,
+                Password = user.Password, 
+                Email = user.Email
+            };
+
+            return userById; 
+        }
+
     }
 }
