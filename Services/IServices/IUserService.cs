@@ -10,5 +10,4 @@ namespace Crud_API.Services.IServices
     }
 }
 
-//Task<List<PublicacionGetDto>> GetAll();
-//Task<Publication> GetById(int id);
+

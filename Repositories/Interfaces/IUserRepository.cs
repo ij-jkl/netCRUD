@@ -7,5 +7,3 @@ namespace Crud_API.Repositories.Interfaces
         Task<List<User>> GetAll();
     }
 }
-
-//Task<List<Publication>> GetAllPublication();

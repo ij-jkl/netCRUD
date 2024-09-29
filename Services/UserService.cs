@@ -18,8 +18,13 @@ namespace Crud_API.Services
         }
 
         public async Task<List<UserGetDto>> GetAll()
-        {
-            var userDtos = new List<UserGetDto>();  
+        {        
+            var userDtos = (await _userRepository.GetAll()).Select(user => new UserGetDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                UserName = user.UserName
+            }).ToList();
 
             return userDtos;
         }
