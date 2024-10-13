@@ -2,7 +2,7 @@
 
 namespace Crud_API.Repositories.Interfaces
 {
-    public interface IUserRepository 
+    public interface IUserRepository
     {
         Task<List<UserEntity>> GetAll();
         Task<UserEntity> GetById(int id);

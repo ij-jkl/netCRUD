@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 
 // Configure Entity Framework using environment variable for Data Source
 var pcName = Environment.GetEnvironmentVariable("MY_PC_NAME");
-var connectionString = $"Data Source={pcName}\\SQLEXPRESS;Initial Catalog=crudAPI;Integrated Security=True;TrustServerCertificate=True;";
+var connectionString = $"Data Source={pcName}\\SQLEXPRESS;Initial Catalog=entrevistaTecnicaEncode;Integrated Security=True;TrustServerCertificate=True;";
 
 // Configure DbContext with the connection string
 builder.Services.AddDbContext<DataContext>(options =>
