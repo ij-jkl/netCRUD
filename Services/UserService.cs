@@ -7,6 +7,8 @@ using Crud_API.Dtos.Put;
 using Crud_API.Entities;
 using Crud_API.Repositories.Interfaces;
 using Crud_API.Services.IServices;
+using BCrypt.Net;
+using Crud_API.Dtos.Login;
 
 namespace Crud_API.Services
 {
@@ -114,7 +116,7 @@ namespace Crud_API.Services
                 {
                     Name = userPostDto.Name,
                     Email = userPostDto.Email,
-                    Password = userPostDto.Password,
+                    Password = BCrypt.Net.BCrypt.HashPassword(userPostDto.Password),
                     UserName = userPostDto.UserName
                 };
 
@@ -160,15 +162,14 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.BADREQUEST,
-                        Message = $"User not found with id: {id}",
+                        Message = $"User not found with id : {id}",
                         Response = null
                     };
                 }
 
-                // Update fields
                 existingUser.Name = userPutDto.Name;
                 existingUser.Email = userPutDto.Email;
-                existingUser.Password = userPutDto.Password;
+                existingUser.Password = BCrypt.Net.BCrypt.HashPassword(userPutDto.Password);
                 existingUser.UserName = userPutDto.UserName;
 
                 await _userRepository.UpdateUser(existingUser);
@@ -183,8 +184,8 @@ namespace Crud_API.Services
 
                 return new ResponseObjectJsonDto()
                 {
-                    Code = (int)CodesHttp.OK,  // 200 status code for successful update
-                    Message = $"The user was updated successfully.",
+                    Code = (int)CodesHttp.OK,  
+                    Message = $"The user was updated successfully :",
                     Response = updatedUserDto
                 };
             }
@@ -193,7 +194,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred: {ex.Message}",
+                    Message = $"Exception occurred : {ex.Message}",
                     Response = null
                 };
             }
@@ -230,6 +231,51 @@ namespace Crud_API.Services
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
                     Message = $"Exception has ocurred ({ex.Message})",
+                    Response = null
+                };
+            }
+        }
+
+        public async Task<ResponseObjectJsonDto> VerifyUser(LoginDto loginDto)
+        {
+            try
+            {
+                var existingUser = await _userRepository.GetByUserName(loginDto.UserName);
+
+                if (existingUser == null)
+                {
+                    return new ResponseObjectJsonDto()
+                    {
+                        Code = (int)CodesHttp.NOTFOUND,
+                        Message = "User not found.",
+                        Response = null
+                    };
+                }
+
+                // Verificar la contraseña
+                if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, existingUser.Password))
+                {
+                    return new ResponseObjectJsonDto()
+                    {
+                        Code = (int)CodesHttp.UNAUTHORIZED,
+                        Message = "Incorrect password.",
+                        Response = null
+                    };
+                }
+
+                return new ResponseObjectJsonDto()
+                {
+                    Code = (int)CodesHttp.OK,
+                    Message = "User and password are correct.",
+                    Response = new { UserName = existingUser.UserName }
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseObjectJsonDto()
+                {
+                    Code = (int)CodesHttp.INTERNALSERVER,
+                    Message = $"Exception has occurred ({ex.Message})",
                     Response = null
                 };
             }

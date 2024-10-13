@@ -1,5 +1,6 @@
 ﻿using Crud_API.Commons;
 using Crud_API.Dtos.Get;
+using Crud_API.Dtos.Login;
 using Crud_API.Dtos.Post;
 using Crud_API.Dtos.Put;
 using Crud_API.Entities;
@@ -50,5 +51,12 @@ namespace Crud_API.Controllers
         {
             return await _userService.DeleteUser(id);
         }
+
+        [HttpPost("verify")]
+        public async Task<ActionResult<ResponseObjectJsonDto>> VerifyUser([FromBody] LoginDto loginDto)
+        {
+            return await _userService.VerifyUser(loginDto);
+        }
+
     }
 }

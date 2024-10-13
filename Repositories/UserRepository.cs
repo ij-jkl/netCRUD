@@ -54,5 +54,11 @@ namespace Crud_API.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<UserEntity> GetByUserName(string userName)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        }
+
     }
 }
