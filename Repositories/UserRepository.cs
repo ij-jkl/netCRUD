@@ -60,5 +60,9 @@ namespace Crud_API.Repositories
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
 
+        public async Task<bool> UserExists(string userName)
+        {
+            return await _dbContext.Users.AnyAsync(u => u.UserName == userName);
+        }
     }
 }

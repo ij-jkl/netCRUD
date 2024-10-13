@@ -58,5 +58,10 @@ namespace Crud_API.Controllers
             return await _userService.VerifyUser(loginDto);
         }
 
+        [HttpGet("exists/{username}")]
+        public async Task<ActionResult<ResponseObjectJsonDto>> CheckUsernameExists(string username)
+        {
+            return await _userService.UserExists(username);
+        }
     }
 }
