@@ -149,45 +149,32 @@ namespace Crud_API.Services
 
         }
 
-        public async Task<ResponseObjectJsonDto> UpdateUser(UserPutDto userPutDt)
+        public async Task<ResponseObjectJsonDto> UpdateUser(int id, UserPutDto userPutDto)
         {
             try
             {
-
-                var existingUser = await _userRepository.GetById(userPutDt.Id);
+                var existingUser = await _userRepository.GetById(id);
 
                 if (existingUser == null)
                 {
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.BADREQUEST,
-                        Message = $"User data is null : ",
+                        Message = $"User not found with id: {id}",
                         Response = null
                     };
                 }
 
-                existingUser.Id = userPutDt.Id;
-                existingUser.Name = userPutDt.Name;
-                existingUser.Email = userPutDt.Email;
-                existingUser.Password = userPutDt.Password;
-                existingUser.UserName = userPutDt.UserName;
+                // Update fields
+                existingUser.Name = userPutDto.Name;
+                existingUser.Email = userPutDto.Email;
+                existingUser.Password = userPutDto.Password;
+                existingUser.UserName = userPutDto.UserName;
 
                 await _userRepository.UpdateUser(existingUser);
 
-
-                if (existingUser.Id == null)
+                var updatedUserDto = new UserPutDto
                 {
-                    return new ResponseObjectJsonDto()
-                    {
-                        Code = (int)CodesHttp.NOTFOUND,
-                        Message = $"The user that you are trying to Update wasnt Found : ",
-                        Response = null
-                    };
-                }
-
-                var userPutDto = new UserPutDto
-                {
-                    Id = existingUser.Id,
                     Name = existingUser.Name,
                     UserName = existingUser.UserName,
                     Email = existingUser.Email,
@@ -196,22 +183,22 @@ namespace Crud_API.Services
 
                 return new ResponseObjectJsonDto()
                 {
-                    Code = (int)CodesHttp.CREATED,
-                    Message = $"The user was updated succesfully: ",
-                    Response = userPutDto
+                    Code = (int)CodesHttp.OK,  // 200 status code for successful update
+                    Message = $"The user was updated successfully.",
+                    Response = updatedUserDto
                 };
-
             }
             catch (Exception ex)
             {
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception has ocurred ({ex.Message})",
+                    Message = $"Exception occurred: {ex.Message}",
                     Response = null
                 };
             }
         }
+
 
         public async Task<ResponseObjectJsonDto> DeleteUser(int id)
         {

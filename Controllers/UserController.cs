@@ -38,11 +38,12 @@ namespace Crud_API.Controllers
             return await _userService.CreateUser(userPostDto);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<ResponseObjectJsonDto>> UserUpdatePut(int id,[FromBody] UserPutDto userPutDto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResponseObjectJsonDto>> UserUpdatePut(int id, [FromBody] UserPutDto userPutDto)
         {
-            return await _userService.UpdateUser(userPutDto);
+            return await _userService.UpdateUser(id, userPutDto);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ResponseObjectJsonDto>> UserDelete(int id)
