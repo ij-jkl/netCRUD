@@ -7,7 +7,7 @@ namespace Crud_API.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly DataContext _dbContext; 
+        private readonly DataContext _dbContext;
 
         public UserRepository(DataContext dbContext)
         {
@@ -25,10 +25,6 @@ namespace Crud_API.Repositories
 
         public async Task CreateUser(UserEntity user)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user), "User cannot be null");
-            }
 
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -37,24 +33,15 @@ namespace Crud_API.Repositories
 
         public async Task UpdateUser(UserEntity user)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user), "User cannot be null");
-            }
 
             var existingUser = await _dbContext.Users.FirstOrDefaultAsync(usr => usr.Id == user.Id);
-
-            if (existingUser == null)
-            {
-                throw new KeyNotFoundException($"User with ID {user.Id} not found");
-            }
 
             existingUser.Name = user.Name;
             existingUser.Email = user.Email;
             existingUser.Password = user.Password;
             existingUser.UserName = user.UserName;
 
-            _dbContext.Users.Update(existingUser);  
+            _dbContext.Users.Update(existingUser);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -68,5 +55,14 @@ namespace Crud_API.Repositories
             }
         }
 
+        public async Task<UserEntity> GetByUserName(string userName)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        }
+
+        public async Task<bool> UserExists(string userName)
+        {
+            return await _dbContext.Users.AnyAsync(u => u.UserName == userName);
+        }
     }
 }

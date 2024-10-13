@@ -1,4 +1,6 @@
-﻿using Crud_API.Dtos.Get;
+﻿using Crud_API.Commons;
+using Crud_API.Dtos.Get;
+using Crud_API.Dtos.Login;
 using Crud_API.Dtos.Post;
 using Crud_API.Dtos.Put;
 using Crud_API.Entities;
@@ -19,96 +21,47 @@ namespace Crud_API.Controllers
             _userService = userService;
         }
 
-        // GET: api/user
         [HttpGet]
-        public async Task<ActionResult<List<UserGetDto>>> UsersGetAll()
+        public async Task<ActionResult<ResponseObjectJsonDto>> UsersGetAll()
         {
-            var users = await _userService.GetAll();  
-
-            if (users == null || users.Count == 0)
-            {
-                return NotFound("No users found");
-            }
-
-            return Ok(users);
+            return await _userService.GetAll();
         }
 
-        // GET: api/user/ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserEntity>> UserGetByID(int id)
+        public async Task<ActionResult<ResponseObjectJsonDto>> UserGetByID(int id)
         {
-            var users = await _userService.GetById(id);
-            if (users == null)
-            {
-                return BadRequest("No users were found with that id");
-            }
-
-            return Ok(users);
+            return await _userService.GetById(id);
         }
 
-        // POST: api/user
         [HttpPost]
-        public async Task<ActionResult<UserPostDto>> UserCreatePost(UserPostDto userPostDto)
+        public async Task<ActionResult<ResponseObjectJsonDto>> UserCreatePost(UserPostDto userPostDto)
         {
-            if (userPostDto == null)
-            {
-                return BadRequest("User data is null");
-            }
-
-            var createdUser = await _userService.CreateUser(userPostDto);
-
-            if (createdUser == null)
-            {
-                return BadRequest("User could not be created");
-            }
-
-            return CreatedAtAction(nameof(UserGetByID), new { id = createdUser.Id }, createdUser);
+            return await _userService.CreateUser(userPostDto);
         }
 
-        // PUT: api/user/ID
         [HttpPut("{id}")]
-        public async Task<ActionResult<UserPutDto>> UserUpdatePut(int id, [FromBody] UserPostDto userPostDto)
+        public async Task<ActionResult<ResponseObjectJsonDto>> UserUpdatePut(int id, [FromBody] UserPutDto userPutDto)
         {
-            if (userPostDto == null)
-            {
-                return BadRequest("User data is null");
-            }
-
-            // The id of the Url has to match the id we are sending in the put method
-            if (id != userPostDto.Id)
-            {
-                return BadRequest("User ID mismatch");
-            }
-
-            try
-            {
-                var updatedUser = await _userService.UpdateUser(userPostDto);
-
-                if (updatedUser == null)
-                {
-                    return NotFound("User not found for update");
-                }
-
-                return Ok(updatedUser);
-            }
-            catch (Exception ex)
-            {
-                // Handles exceptions during updating
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return await _userService.UpdateUser(id, userPutDto);
         }
+
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> UserDelete(int id)
+        public async Task<ActionResult<ResponseObjectJsonDto>> UserDelete(int id)
         {
-            var userExists = await _userService.GetById(id);
-            if (userExists == null)
-            {
-                return NotFound("User not found");
-            }
+            return await _userService.DeleteUser(id);
+        }
 
-            await _userService.DeleteUser(id);
-            return NoContent(); 
+        [HttpPost("verify")]
+        public async Task<ActionResult<ResponseObjectJsonDto>> VerifyUser([FromBody] LoginDto loginDto)
+        {
+            return await _userService.VerifyUser(loginDto);
+        }
+
+        [HttpGet("exists/{username}")]
+        public async Task<ActionResult<ResponseObjectJsonDto>> CheckUsernameExists(string username)
+        {
+            return await _userService.UserExists(username);
         }
     }
 }

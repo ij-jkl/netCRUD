@@ -2,7 +2,7 @@
 
 namespace Crud_API.Repositories.Interfaces
 {
-    public interface IUserRepository 
+    public interface IUserRepository
     {
         Task<List<UserEntity>> GetAll();
         Task<UserEntity> GetById(int id);
@@ -10,5 +10,7 @@ namespace Crud_API.Repositories.Interfaces
         Task CreateUser(UserEntity user);
         Task UpdateUser(UserEntity user);
         Task DeleteUser(int id);
+        Task<UserEntity> GetByUserName(string userName);
+        Task<bool> UserExists(string userName);
     }
 }
