@@ -52,12 +52,14 @@ namespace Crud_API.Controllers
             return await _userService.DeleteUser(id);
         }
 
+        // Comparacion entre usuario y contraseña, para ver si podria loguearse
         [HttpPost("verify")]
         public async Task<ActionResult<ResponseObjectJsonDto>> VerifyUser([FromBody] LoginDto loginDto)
         {
             return await _userService.VerifyUser(loginDto);
         }
 
+        // Validacion para asegurarnos de que no se registre alguien con el mismo nombre de usuario que ya existe
         [HttpGet("exists/{username}")]
         public async Task<ActionResult<ResponseObjectJsonDto>> CheckUsernameExists(string username)
         {
