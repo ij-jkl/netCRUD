@@ -228,7 +228,7 @@ namespace Crud_API.Services
                     };
                 }
 
-                _userRepository.DeleteUser(id);
+                await _userRepository.DeleteUser(id);
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.NOCONTENT,
@@ -247,6 +247,7 @@ namespace Crud_API.Services
             }
         }
 
+        // Comparacion entre usuario y contraseña, para ver si podria loguearse
         public async Task<ResponseObjectJsonDto> VerifyUser(LoginDto loginDto)
         {
             try
@@ -290,6 +291,8 @@ namespace Crud_API.Services
                 };
             }
         }
+
+        // Validacion para asegurarnos de que no se registre alguien con el mismo nombre de usuario que ya existe
         public async Task<ResponseObjectJsonDto> UserExists(string userName)
         {
             try
