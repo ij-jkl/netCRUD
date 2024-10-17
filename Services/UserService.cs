@@ -52,7 +52,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.OK,
-                        Message = "OK",
+                        Message = "The Users are : ",
                         Response = userDtos
                     };
                 }
@@ -61,7 +61,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.NOTFOUND,
-                        Message = "There aren't any users registered.",
+                        Message = "There arent any users registered in the System!",
                         Response = null
                     };
                 }
@@ -71,7 +71,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred ({ex.Message})",
+                    Message = $"Exception has occurred ({ex.Message})",
                     Response = null
                 };
             }
@@ -88,7 +88,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.NOCONTENT,
-                        Message = "There aren't any users registered with that ID.",
+                        Message = "There aren't any users registered with that ID, check again the ID provided",
                         Response = null
                     };
                 }
@@ -103,7 +103,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.OK,
-                    Message = "The user with that ID is found.",
+                    Message = "The user with that ID was found : ",
                     Response = userById
                 };
 
@@ -113,7 +113,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred ({ex.Message})",
+                    Message = $"Exception has occurred ({ex.Message})",
                     Response = null
                 };
             }
@@ -131,7 +131,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.BADREQUEST,
-                        Message = "Email address already registered, try with another one!",
+                        Message = "Email address has already been registered, try with another one!",
                         Response = null
                     };
                 }
@@ -143,7 +143,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.BADREQUEST,
-                        Message = "Username is already taken.",
+                        Message = "Username has already been registered",
                         Response = null
                     };
                 }
@@ -155,7 +155,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.BADREQUEST,
-                        Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
+                        Message = string.Join("The validation wasnt successful", validationResult.Errors.Select(e => e.ErrorMessage)),
                         Response = null
                     };
                 }
@@ -173,7 +173,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.CREATED,
-                    Message = "User was created successfully.",
+                    Message = "User was created successfully!",
                     Response = newUser
                 };
             }
@@ -182,13 +182,11 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred: {ex.Message}",
+                    Message = $"Exception has occurred :( {ex.Message}",
                     Response = null
                 };
             }
         }
-
-
 
         public async Task<ResponseObjectJsonDto> UpdateUser(int id, UserPutDto userPutDto)
         {
@@ -201,7 +199,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.BADREQUEST,
-                        Message = $"User not found with id : {id}",
+                        Message = $"User with the following ID wasnt found : {id}",
                         Response = null
                     };
                 }
@@ -224,7 +222,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.OK,
-                    Message = $"The user was updated successfully :",
+                    Message = $"The user was updated successfully!",
                     Response = updatedUserDto
                 };
             }
@@ -233,7 +231,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred : {ex.Message}",
+                    Message = $"Exception has occurred : {ex.Message}",
                     Response = null
                 };
             }
@@ -250,7 +248,7 @@ namespace Crud_API.Services
                     return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.NOTFOUND,
-                        Message = "The user you are trying to delete was not found.",
+                        Message = "The user you are trying to delete was not found, check again the ID that was provided",
                         Response = null
                     };
                 }
@@ -259,8 +257,8 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.NOCONTENT,
-                    Message = "The user was deleted successfully.",
-                    Response = null
+                    Message = "The user was deleted successfully",
+                    Response = user
                 };
             }
             catch (Exception ex)
@@ -268,7 +266,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto()
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred ({ex.Message})",
+                    Message = $"Exception has occurred ({ex.Message})",
                     Response = null
                 };
             }
@@ -283,7 +281,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto
                 {
                     Code = (int)CodesHttp.BADREQUEST,
-                    Message = "Email is already registered.",
+                    Message = "Email is not free to be registered!",
                     Response = null
                 };
             }
@@ -291,8 +289,8 @@ namespace Crud_API.Services
             return new ResponseObjectJsonDto
             {
                 Code = (int)CodesHttp.OK,
-                Message = "Email is available.",
-                Response = null
+                Message = "Email is available for registration",
+                Response = email
             };
         }
 
@@ -305,7 +303,7 @@ namespace Crud_API.Services
                 return new ResponseObjectJsonDto
                 {
                     Code = (int)CodesHttp.BADREQUEST,
-                    Message = "Username is already taken.",
+                    Message = "Username is already registered, try with another one ",
                     Response = null
                 };
             }
@@ -313,8 +311,8 @@ namespace Crud_API.Services
             return new ResponseObjectJsonDto
             {
                 Code = (int)CodesHttp.OK,
-                Message = "Username is available.",
-                Response = null
+                Message = "Username is available for register",
+                Response = userName
             };
         }
 

@@ -23,6 +23,7 @@ namespace Crud_API.Validators
             RuleFor(x => x.Password)
                 .MinimumLength(8).WithMessage("Password MUST be at least 8 characters long!")
                 .Matches(@"[0-9]").WithMessage("Password MUST have at least one number ranging from 0 to 9")
+                .Matches("[A-Z]").WithMessage("Password HAST TO have least 1 CAPITAL letter")
                 .Matches(@"[!@#$%]").WithMessage("Password MUST contain at least one special symbol, could be --->   !@#$%");
 
             RuleFor(x => x.UserName)

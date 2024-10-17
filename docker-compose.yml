@@ -9,26 +9,26 @@ services:
       - "8080:80"  
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"
+      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac;"
     depends_on:
-      - mysql
+      - mysql # Depende de la img de mysql para correr
 
   mysql:
     image: mysql:9.0.1
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: isaac123
+      MYSQL_ROOT_PASSWORD: isaac
       MYSQL_DATABASE: entrevistaTecnicaEncode
     volumes:
       - mysql-data:/var/lib/mysql
 
-  migrate:
+  migrate: #migro la img de la tabla entera y tiro el comando dotnet ef database update para que se actualice la migracion simepre que se corra
     build:
       context: . 
       dockerfile: Dockerfile  
     environment:
-      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"
+      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac;"
     command: ["dotnet", "ef", "database", "update"]  
 
 volumes:
