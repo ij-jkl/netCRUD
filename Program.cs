@@ -4,6 +4,8 @@ using Crud_API.Repositories;
 using Crud_API.Services.IServices;
 using Crud_API.Services;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using Crud_API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Register FluentValidation and all validators from the assembly
+builder.Services.AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssemblyContaining<UserPostDtoValidator>(); // Register all validators in the same assembly as UserPostDtoValidator
+});
 
 var app = builder.Build();
 

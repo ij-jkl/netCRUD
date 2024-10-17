@@ -1,4 +1,4 @@
-version: '3.8'  # You can keep this, but check for updates
+version: '3.8'
 
 services:
   crud_api:
@@ -6,22 +6,30 @@ services:
       context: .  # Ensure this is the right context
       dockerfile: Dockerfile  # Ensure this points to your Dockerfile
     ports:
-      - "8080:8080"  # Map host port 8080 to container port 8080
+      - "8080:80"  # Map host port 8080 to container port 80
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development  # Set the environment variable for the application
-      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"  # MySQL connection string
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"
     depends_on:
-      - mysql  # Ensure MySQL starts before the API service
+      - mysql
 
   mysql:
-    image: mysql:9.0.1  # Specify a version for the MySQL image
+    image: mysql:9.0.1
     ports:
-      - "8445:3306"  # Map host port 8445 to container port 3306
+      - "8445:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: isaac123  # Set root password
-      MYSQL_DATABASE: entrevistaTecnicaEncode  # Create the database
+      MYSQL_ROOT_PASSWORD: isaac123
+      MYSQL_DATABASE: entrevistaTecnicaEncode
     volumes:
-      - mysql-data:/var/lib/mysql  # Persist data in a volume
+      - mysql-data:/var/lib/mysql
+
+  migrate:
+    build:
+      context: .  # Use the same context as your main service
+      dockerfile: Dockerfile  # Use the same Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"
+    command: ["dotnet", "ef", "database", "update"]  # Run the migration command
 
 volumes:
-  mysql-data:  # Define a named volume for MySQL data
+  mysql-data:
