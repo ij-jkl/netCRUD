@@ -10,7 +10,7 @@ namespace Crud_API.Repositories.Interfaces
         Task CreateUser(UserEntity user);
         Task UpdateUser(UserEntity user);
         Task DeleteUser(int id);
-        Task<UserEntity> GetByUserName(string userName);
-        Task<bool> UserExists(string userName);
+        Task<bool> EmailExistsAsync(string email);
+        Task<bool> UserExistsAsync(string userName);
     }
 }

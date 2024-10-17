@@ -14,8 +14,8 @@ namespace Crud_API.Services.IServices
         Task<ResponseObjectJsonDto> CreateUser(UserPostDto user);
         Task<ResponseObjectJsonDto> UpdateUser(int id,UserPutDto user);
         Task<ResponseObjectJsonDto> DeleteUser(int id);
-        Task<ResponseObjectJsonDto> VerifyUser(LoginDto loginDto);
-        Task<ResponseObjectJsonDto> UserExists(string userName);
+        Task<ResponseObjectJsonDto> CheckEmailExistsAsync(string email);
+        Task<ResponseObjectJsonDto> CheckUserExistsAsync(string userName);
     }
 }
 

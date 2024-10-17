@@ -50,18 +50,6 @@ namespace Crud_API.Controllers
         public async Task<ActionResult<ResponseObjectJsonDto>> UserDelete(int id)
         {
             return await _userService.DeleteUser(id);
-        }
-
-        [HttpPost("verify")]
-        public async Task<ActionResult<ResponseObjectJsonDto>> VerifyUser([FromBody] LoginDto loginDto)
-        {
-            return await _userService.VerifyUser(loginDto);
-        }
-
-        [HttpGet("exists/{username}")]
-        public async Task<ActionResult<ResponseObjectJsonDto>> CheckUsernameExists(string username)
-        {
-            return await _userService.UserExists(username);
-        }
+        }   
     }
 }

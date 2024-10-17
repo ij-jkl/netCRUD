@@ -12,10 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Load the connection string from appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault");
 
-// Configure DbContext with the connection string
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -26,12 +24,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// Register FluentValidation and all validators from the assembly
 builder.Services.AddFluentValidation(fv =>
 {
-    fv.RegisterValidatorsFromAssemblyContaining<UserPostDtoValidator>(); // Register all validators in the same assembly as UserPostDtoValidator
-});
-
+    fv.RegisterValidatorsFromAssemblyContaining<UserPostDtoValidator>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -3,10 +3,10 @@ version: '3.8'
 services:
   crud_api:
     build:
-      context: .  # Ensure this is the right context
-      dockerfile: Dockerfile  # Ensure this points to your Dockerfile
+      context: . 
+      dockerfile: Dockerfile  
     ports:
-      - "8080:80"  # Map host port 8080 to container port 80
+      - "8080:80"  
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"
@@ -16,7 +16,7 @@ services:
   mysql:
     image: mysql:9.0.1
     ports:
-      - "8445:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: isaac123
       MYSQL_DATABASE: entrevistaTecnicaEncode
@@ -25,11 +25,11 @@ services:
 
   migrate:
     build:
-      context: .  # Use the same context as your main service
-      dockerfile: Dockerfile  # Use the same Dockerfile
+      context: . 
+      dockerfile: Dockerfile  
     environment:
       - ConnectionStrings__DefaultConnection="server=mysql;port=3306;database=entrevistaTecnicaEncode;user=root;password=isaac123;"
-    command: ["dotnet", "ef", "database", "update"]  # Run the migration command
+    command: ["dotnet", "ef", "database", "update"]  
 
 volumes:
   mysql-data:

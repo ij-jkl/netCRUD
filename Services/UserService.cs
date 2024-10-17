@@ -47,19 +47,24 @@ namespace Crud_API.Services
                     UserName = user.UserName
                 }).ToList();
 
-                return userDtos.Any()
-                    ? new ResponseObjectJsonDto()
+                if (userDtos.Any())
+                {
+                    return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.OK,
                         Message = "OK",
                         Response = userDtos
-                    }
-                    : new ResponseObjectJsonDto()
+                    };
+                }
+                else
+                {
+                    return new ResponseObjectJsonDto()
                     {
                         Code = (int)CodesHttp.NOTFOUND,
                         Message = "There aren't any users registered.",
                         Response = null
                     };
+                }
             }
             catch (Exception ex)
             {
@@ -116,26 +121,16 @@ namespace Crud_API.Services
 
         public async Task<ResponseObjectJsonDto> CreateUser(UserPostDto userPostDto)
         {
-            // Validate the UserPostDto
-            ValidationResult validationResult = await _userPostValidator.ValidateAsync(userPostDto);
-            if (!validationResult.IsValid)
-            {
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.BADREQUEST,
-                    Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
-                    Response = null
-                };
-            }
-
             try
             {
-                if (await _userRepository.UserExists(userPostDto.UserName))
+                // Validate the UserPostDto inside the try block to catch any validation exceptions
+                ValidationResult validationResult = await _userPostValidator.ValidateAsync(userPostDto);
+                if (!validationResult.IsValid)
                 {
                     return new ResponseObjectJsonDto()
                     {
-                        Code = (int)CodesHttp.CONFLICT,
-                        Message = "Username already exists.",
+                        Code = (int)CodesHttp.BADREQUEST,
+                        Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
                         Response = null
                     };
                 }
@@ -163,59 +158,6 @@ namespace Crud_API.Services
                 {
                     Code = (int)CodesHttp.INTERNALSERVER,
                     Message = $"Exception occurred ({ex.Message})",
-                    Response = null
-                };
-            }
-        }
-
-        public async Task<ResponseObjectJsonDto> UpdateUser(int id, UserPutDto userPutDto)
-        {
-            // Validate the UserPutDto
-            ValidationResult validationResult = await _userPutValidator.ValidateAsync(userPutDto);
-            if (!validationResult.IsValid)
-            {
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.BADREQUEST,
-                    Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
-                    Response = null
-                };
-            }
-
-            try
-            {
-                var existingUser = await _userRepository.GetById(id);
-
-                if (existingUser == null)
-                {
-                    return new ResponseObjectJsonDto()
-                    {
-                        Code = (int)CodesHttp.BADREQUEST,
-                        Message = $"User not found with ID: {id}",
-                        Response = null
-                    };
-                }
-
-                existingUser.Name = userPutDto.Name;
-                existingUser.Email = userPutDto.Email;
-                existingUser.Password = BCrypt.Net.BCrypt.HashPassword(userPutDto.Password);
-                existingUser.UserName = userPutDto.UserName;
-
-                await _userRepository.UpdateUser(existingUser);
-
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.OK,
-                    Message = "The user was updated successfully.",
-                    Response = userPutDto
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred: {ex.Message}",
                     Response = null
                 };
             }
@@ -256,94 +198,44 @@ namespace Crud_API.Services
             }
         }
 
-        public async Task<ResponseObjectJsonDto> VerifyUser(LoginDto loginDto)
+        public async Task<ResponseObjectJsonDto> CheckEmailExistsAsync(string email)
         {
-            // Validate the LoginDto
-            ValidationResult validationResult = await _loginDtoValidator.ValidateAsync(loginDto);
-            if (!validationResult.IsValid)
+            var exists = await _userRepository.EmailExistsAsync(email);
+            if (exists)
             {
-                return new ResponseObjectJsonDto()
+                return new ResponseObjectJsonDto
                 {
                     Code = (int)CodesHttp.BADREQUEST,
-                    Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
+                    Message = "Email is already registered.",
                     Response = null
                 };
             }
-
-            try
+            return new ResponseObjectJsonDto
             {
-                var existingUser = await _userRepository.GetByUserName(loginDto.UserName);
-
-                if (existingUser == null)
-                {
-                    return new ResponseObjectJsonDto()
-                    {
-                        Code = (int)CodesHttp.NOTFOUND,
-                        Message = "User not found.",
-                        Response = null
-                    };
-                }
-
-                if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, existingUser.Password))
-                {
-                    return new ResponseObjectJsonDto()
-                    {
-                        Code = (int)CodesHttp.UNAUTHORIZED,
-                        Message = "Incorrect password.",
-                        Response = null
-                    };
-                }
-
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.OK,
-                    Message = "User and password are correct.",
-                    Response = new { UserName = existingUser.UserName }
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred ({ex.Message})",
-                    Response = null
-                };
-            }
+                Code = (int)CodesHttp.OK,
+                Message = "Email is available.",
+                Response = null
+            };
         }
 
-        public async Task<ResponseObjectJsonDto> UserExists(string userName)
+        public async Task<ResponseObjectJsonDto> CheckUserExistsAsync(string userName)
         {
-            try
+            var exists = await _userRepository.UserExistsAsync(userName);
+            if (exists)
             {
-                var exists = await _userRepository.UserExists(userName);
-
-                if (exists)
+                return new ResponseObjectJsonDto
                 {
-                    return new ResponseObjectJsonDto()
-                    {
-                        Code = (int)CodesHttp.CONFLICT,
-                        Message = "Username already exists and cannot be registered. Try a different one.",
-                        Response = null
-                    };
-                }
-
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.OK,
-                    Message = "Username is available for registration!",
-                    Response = exists
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResponseObjectJsonDto()
-                {
-                    Code = (int)CodesHttp.INTERNALSERVER,
-                    Message = $"Exception occurred ({ex.Message})",
+                    Code = (int)CodesHttp.BADREQUEST,
+                    Message = "Username is already taken.",
                     Response = null
                 };
             }
+            return new ResponseObjectJsonDto
+            {
+                Code = (int)CodesHttp.OK,
+                Message = "Username is available.",
+                Response = null
+            };
         }
 
     }
