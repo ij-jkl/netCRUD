@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Crud_API.Validators
 {
-    public class LoginDtoValidator : AbstractValidator<LoginDto>
+    public class LoginDtoValidator : AbstractValidator<UserLoginDto>
     {
         public LoginDtoValidator()
         {

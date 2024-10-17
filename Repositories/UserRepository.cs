@@ -48,11 +48,9 @@ namespace Crud_API.Repositories
         public async Task DeleteUser(int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
-            if (user != null)
-            {
-                _dbContext.Users.Remove(user);
-                await _dbContext.SaveChangesAsync();
-            }
+            
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
         }
         public async Task<bool> EmailExistsAsync(string email)
         {

@@ -26,7 +26,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddFluentValidation(fv =>
 {
-    fv.RegisterValidatorsFromAssemblyContaining<UserPostDtoValidator>();
+    fv.RegisterValidatorsFromAssemblyContaining<UserPostDtoValidator>(); 
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
