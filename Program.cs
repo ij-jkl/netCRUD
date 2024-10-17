@@ -4,26 +4,30 @@ using Crud_API.Repositories;
 using Crud_API.Services.IServices;
 using Crud_API.Services;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using Crud_API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configure Entity Framework using environment variable for Data Source
-var pcName = Environment.GetEnvironmentVariable("MY_PC_NAME");
-var connectionString = $"Data Source={pcName}\\SQLEXPRESS;Initial Catalog=entrevistaTecnicaEncode;Integrated Security=True;TrustServerCertificate=True;";
+var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault");
 
-// Configure DbContext with the connection string
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();  
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssemblyContaining<UserPostDtoValidator>(); 
+});
 
 var app = builder.Build();
 

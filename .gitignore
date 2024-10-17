@@ -1,3 +1,2 @@
-obj/
-# Ignore .NET build files
 bin/
+obj/

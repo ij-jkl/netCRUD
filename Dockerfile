@@ -20,7 +20,6 @@ RUN dotnet publish "Crud-API.csproj" -c Release -o /app/publish
 # Permite usar Curl para debugear desde Docker
 RUN apt-get update && apt-get install -y curl
 
-1
 # Postea la img final del Project
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app

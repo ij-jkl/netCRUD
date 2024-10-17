@@ -7,10 +7,8 @@ namespace Crud_API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
         }
 
         public DbSet<UserEntity> Users { get; set; }
     }
 }
-
